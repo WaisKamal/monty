@@ -3,7 +3,6 @@
 
 #include "monty.h"
 
-extern stack_t* stack_top;     /* Pointer to the bottom of the stack */
 extern stack_t* stack_bottom;  /* Pointer to the top of the stack */
 extern int stack_size;         /* The size of the stack */
 extern char** args;            /* The opcode and its arguments */
@@ -110,5 +109,24 @@ void exec_mul(stack_t** stack, unsigned int line_number);
  * 
 */
 void exec_mod(stack_t** stack, unsigned int line_number);
+
+/**
+ * exec_pchar - executes the pchar instruction
+ * 
+ * @stack: pointer to the stack
+ * @line_number: the line number of the instruction
+ * 
+*/
+void exec_pchar(stack_t** stack, unsigned int line_number);
+
+/**
+ * exec_pstr - executes the pstr instruction
+ * 
+ * @stack: pointer to the stack
+ * @line_number: the line number of the instruction
+ * 
+*/
+void exec_pstr(stack_t** stack, unsigned int line_number);
+
 
 #endif

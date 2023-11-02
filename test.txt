@@ -1,3 +1,7 @@
-push 2
-push 3
-pall
+push 0
+push 80
+push 81
+push 82
+push 83
+push 84
+pstr

@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "instructions.h"
 #include "stdio.h"
+#include "utils.h"
 
 /**
  * exec - executes the given instruction
@@ -11,16 +12,18 @@
 */
 void exec(stack_t** stack, unsigned int line_number) {
     instruction_t instructions[] = {
-        { "push", &exec_push },
-        { "pall", &exec_pall },
-        { "pint", &exec_pint },
-        { "pop",  &exec_pop  },
-        { "swap", &exec_swap },
-        { "add",  &exec_add  },
-        { "sub",  &exec_sub  },
-        { "div",  &exec_div  },
-        { "mul",  &exec_mul  },
-        { "mod",  &exec_mod  }
+        { "push",  &exec_push  },
+        { "pall",  &exec_pall  },
+        { "pint",  &exec_pint  },
+        { "pop",   &exec_pop   },
+        { "swap",  &exec_swap  },
+        { "add",   &exec_add   },
+        { "sub",   &exec_sub   },
+        { "div",   &exec_div   },
+        { "mul",   &exec_mul   },
+        { "mod",   &exec_mod   },
+        { "pchar", &exec_pchar },
+        { "pstr",  &exec_pstr  }
     };
     unsigned long int i;
     unsigned long instructions_count = sizeof(instructions) / sizeof(instruction_t);
@@ -299,4 +302,47 @@ void exec_mod(stack_t** stack, unsigned int line_number) {
 
     /* Remove the top element */
     exec_pop(stack, line_number);
+}
+
+/**
+ * exec_pchar - executes the pchar instruction
+ * 
+ * @stack: pointer to the stack
+ * @line_number: the line number of the instruction
+ * 
+*/
+void exec_pchar(stack_t** stack, unsigned int line_number) {
+    int first;
+
+    if (!(*stack)) {
+        status = -1;
+        fprintf(stderr, "L%d: can't pop an empty stack\n", line_number);
+        return;
+    }
+
+    first = (*stack)->n;
+
+    if (!is_printable_ascii_char(first)) {
+        status = -1;
+        fprintf(stderr, "L%d: can't pchar, value out of range\n", line_number);
+        return;
+    }
+
+    printf("%c\n", (char)first);
+}
+
+/**
+ * exec_pstr - executes the pstr instruction
+ * 
+ * @stack: pointer to the stack
+ * @line_number: the line number of the instruction
+ * 
+*/
+void exec_pstr(stack_t** stack, unsigned int line_number) {
+    stack_t* stack_top = *stack;
+    while (stack_top && stack_top->n && is_printable_ascii_char(stack_top->n)) {
+        printf("%c", (char)stack_top->n);
+        stack_top = stack_top->prev;
+    }
+    printf("\n");
 }

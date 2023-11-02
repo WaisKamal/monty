@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include "monty.h"
 #include "instructions.h"
+#include "utils.h"
 
-stack_t* stack_top;     /* Pointer to the top of the stack */
 stack_t* stack_bottom;  /* Pointer to the bottom of the stack */
 int stack_size;         /* The size of the stack */
 char** args;            /* The opcode and its arguments */
@@ -20,7 +20,6 @@ int main(int argc, char** argv) {
     stack_t* stack_ptr = NULL;  /* Pointer to the stack */
 
     /* Initialize stack */
-    stack_top = stack_ptr;
     stack_bottom = stack_ptr;
     stack_size = 0;
     mode = 0;
@@ -33,6 +32,7 @@ int main(int argc, char** argv) {
     }*/
 
     /* Open source file */
+    /* input_file = fopen(argv[1], "r"); */
     input_file = stdin;
 
     /* If file does not exist */
@@ -55,6 +55,9 @@ int main(int argc, char** argv) {
             buffer[line_length - 1] = '\0';
             line_length--;
         }
+
+        /* Trim line at the first '#' character */
+        remove_comments(buffer);
 
         args = split_string(buffer);
         arg_count = get_word_count(buffer);
