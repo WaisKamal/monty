@@ -93,4 +93,22 @@ void exec_sub(stack_t** stack, unsigned int line_number);
 */
 void exec_div(stack_t** stack, unsigned int line_number);
 
+/**
+ * exec_mul - executes the mul instruction
+ * 
+ * @stack: pointer to the stack
+ * @line_number: the line number of the instruction
+ * 
+*/
+void exec_mul(stack_t** stack, unsigned int line_number);
+
+/**
+ * exec_mod - executes the mod instruction
+ * 
+ * @stack: pointer to the stack
+ * @line_number: the line number of the instruction
+ * 
+*/
+void exec_mod(stack_t** stack, unsigned int line_number);
+
 #endif

@@ -19,6 +19,8 @@ void exec(stack_t** stack, unsigned int line_number) {
         { "add",  &exec_add  },
         { "sub",  &exec_sub  },
         { "div",  &exec_div  },
+        { "mul",  &exec_mul  },
+        { "mod",  &exec_mod  }
     };
     unsigned long int i;
     unsigned long instructions_count = sizeof(instructions) / sizeof(instruction_t);
@@ -235,6 +237,65 @@ void exec_div(stack_t** stack, unsigned int line_number) {
 
     /* Perform division: second = second / first */
     *second = (*second / *first);
+
+    /* Remove the top element */
+    exec_pop(stack, line_number);
+}
+
+/**
+ * exec_mul - executes the mul instruction
+ * 
+ * @stack: pointer to the stack
+ * @line_number: the line number of the instruction
+ * 
+*/
+void exec_mul(stack_t** stack, unsigned int line_number) {
+    int* first;
+    int* second;
+
+    if (stack_size < 2) {
+        status = -1;
+        fprintf(stderr, "L%d: can't mul, stack too short\n", line_number);
+        return;
+    }
+
+    /* Perform subtraction: second = second - first */
+    first = &(*stack)->n;
+    second = &(*stack)->prev->n;
+    *second = (*second * *first);
+
+    /* Remove the top element */
+    exec_pop(stack, line_number);
+}
+
+/**
+ * exec_mod - executes the mod instruction
+ * 
+ * @stack: pointer to the stack
+ * @line_number: the line number of the instruction
+ * 
+*/
+void exec_mod(stack_t** stack, unsigned int line_number) {
+    int* first;
+    int* second;
+
+    if (stack_size < 2) {
+        status = -1;
+        fprintf(stderr, "L%d: can't mod, stack too short\n", line_number);
+        return;
+    }
+
+    first = &(*stack)->n;
+    second = &(*stack)->prev->n;
+
+    if (*first == 0) {
+        status = -1;
+        fprintf(stderr, "L%d: division by zero\n", line_number);
+        return;
+    }
+
+    /* Perform division: second = second / first */
+    *second = (*second % *first);
 
     /* Remove the top element */
     exec_pop(stack, line_number);

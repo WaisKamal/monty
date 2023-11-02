@@ -45,6 +45,11 @@ int main(int argc, char** argv) {
     while (fgets(buffer, sizeof buffer, input_file)) {
         line_length = strlen(buffer);
 
+        /* Skip empty lines */
+        if (line_length == 0) {
+            continue;
+        }
+
         /* Remove any trailing newline character */
         if (buffer[line_length - 1] == '\n') {
             buffer[line_length - 1] = '\0';
