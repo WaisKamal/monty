@@ -128,5 +128,21 @@ void exec_pchar(stack_t** stack, unsigned int line_number);
 */
 void exec_pstr(stack_t** stack, unsigned int line_number);
 
+/**
+ * exec_rotl - executes the rotl instruction
+ * 
+ * @stack: pointer to the stack
+ * @line_number: the line number of the instruction
+ * 
+*/
+void exec_rotl(stack_t** stack, unsigned int line_number);
 
+/**
+ * exec_rotr - executes the rotr instruction
+ * 
+ * @stack: pointer to the stack
+ * @line_number: the line number of the instruction
+ * 
+*/
+void exec_rotr(stack_t** stack, unsigned int line_number);
 #endif

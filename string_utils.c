@@ -103,7 +103,7 @@ void free_string_array(char** string_array) {
 */
 bool is_valid_integer(char* str) {
     while (*str) {
-        if (*str < '0' && *str > '9') {
+        if (*str < '0' || *str > '9') {
             return false;
         }
         str++;

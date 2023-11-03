@@ -23,7 +23,9 @@ void exec(stack_t** stack, unsigned int line_number) {
         { "mul",   &exec_mul   },
         { "mod",   &exec_mod   },
         { "pchar", &exec_pchar },
-        { "pstr",  &exec_pstr  }
+        { "pstr",  &exec_pstr  },
+        { "rotl",  &exec_rotl  },
+        { "rotr",  &exec_rotr  }
     };
     unsigned long int i;
     unsigned long instructions_count = sizeof(instructions) / sizeof(instruction_t);
@@ -68,6 +70,7 @@ void exec_push(stack_t** stack, unsigned int line_number) {
         (*stack) = (*stack)->next;
     } else {
         *stack = new_stack_entry;
+        stack_bottom = *stack;
     }
 
     /* Increment stack size */
@@ -126,6 +129,8 @@ void exec_pop(stack_t** stack, unsigned int line_number) {
     /* Set the next pointer of the new stack if it is not empty */
     if (*stack) {
         (*stack)->next = NULL;
+    } else {
+        stack_bottom = NULL;
     }
 
     /* Decrement stack size */
@@ -345,4 +350,50 @@ void exec_pstr(stack_t** stack, unsigned int line_number) {
         stack_top = stack_top->prev;
     }
     printf("\n");
+}
+
+/**
+ * exec_rotl - executes the rotl instruction
+ * 
+ * @stack: pointer to the stack
+ * @line_number: the line number of the instruction
+ * 
+*/
+void exec_rotl(stack_t** stack, unsigned int line_number) {
+    stack_t* second;
+    /* rotl has no effect if stack size is less than 2 */
+    if (stack_size > 1) {
+        second = (*stack)->prev;
+        second->next = NULL;
+
+        (*stack)->next = stack_bottom;
+        (*stack)->prev = NULL;
+        stack_bottom->prev = *stack;
+        stack_bottom = *stack;
+
+        *stack = second;
+    }
+}
+
+/**
+ * exec_rotr - executes the rotr instruction
+ * 
+ * @stack: pointer to the stack
+ * @line_number: the line number of the instruction
+ * 
+*/
+void exec_rotr(stack_t** stack, unsigned int line_number) {
+    stack_t* second_last;
+    /* rotr has no effect if stack size is less than 2 */
+    if (stack_size > 1) {
+        second_last = stack_bottom->next;
+        second_last->prev = NULL;
+
+        (*stack)->next = stack_bottom;
+        stack_bottom->next = NULL;
+        stack_bottom->prev = *stack;
+        *stack = stack_bottom;
+
+        stack_bottom = second_last;
+    }
 }
