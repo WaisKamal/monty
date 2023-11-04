@@ -267,7 +267,7 @@ void exec_mul(stack_t** stack, unsigned int line_number) {
         return;
     }
 
-    /* Perform subtraction: second = second - first */
+    /* Perform multiplication: second = second * first */
     first = &(*stack)->n;
     second = &(*stack)->prev->n;
     *second = (*second * *first);
@@ -302,7 +302,7 @@ void exec_mod(stack_t** stack, unsigned int line_number) {
         return;
     }
 
-    /* Perform division: second = second / first */
+    /* Perform modulus: second = second % first */
     *second = (*second % *first);
 
     /* Remove the top element */
