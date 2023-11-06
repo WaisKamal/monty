@@ -3,6 +3,9 @@
 
 #include "monty.h"
 
+#define STACK_MODE 0
+#define QUEUE_MODE 1
+
 extern stack_t* stack_bottom;  /* Pointer to the top of the stack */
 extern int stack_size;         /* The size of the stack */
 extern char** args;            /* The opcode and its arguments */
@@ -19,6 +22,20 @@ extern int status;             /* The status code for the last instruction -
  * 
 */
 void exec(stack_t** stack, unsigned int line_number);
+
+/**
+ * pop_top - removes the top element of the stack
+ * 
+ * @stack: pointer to the stack
+*/
+void pop_top(stack_t** stack);
+
+/**
+ * pop_bottom - removes the bottom element of the stack
+ * 
+ * @stack: pointer to the stack
+*/
+void pop_bottom(stack_t** stack);
 
 /**
  * exec_push - executes the push instruction
@@ -145,4 +162,23 @@ void exec_rotl(stack_t** stack, unsigned int line_number);
  * 
 */
 void exec_rotr(stack_t** stack, unsigned int line_number);
+
+/**
+ * exec_stack - executes the stack instruction
+ * 
+ * @stack: pointer to the stack
+ * @line_number: the line number of the instruction
+ * 
+*/
+void exec_stack(stack_t** stack, unsigned int line_number);
+
+/**
+ * exec_queue - executes the queue instruction
+ * 
+ * @stack: pointer to the stack
+ * @line_number: the line number of the instruction
+ * 
+*/
+void exec_queue(stack_t** stack, unsigned int line_number);
+
 #endif

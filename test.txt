@@ -1,7 +1,16 @@
-push 0
-push 80
-push 81
-push 82
-push 83
-push 84
-pstr
+queue
+push 1
+push 2
+push 3
+pall
+stack
+push 4
+push 5
+push 6
+pall
+add
+pall
+queue
+push 11111
+add
+pall

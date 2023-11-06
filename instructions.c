@@ -25,7 +25,9 @@ void exec(stack_t** stack, unsigned int line_number) {
         { "pchar", &exec_pchar },
         { "pstr",  &exec_pstr  },
         { "rotl",  &exec_rotl  },
-        { "rotr",  &exec_rotr  }
+        { "rotr",  &exec_rotr  },
+        { "stack", &exec_stack },
+        { "queue", &exec_queue }
     };
     unsigned long int i;
     unsigned long instructions_count = sizeof(instructions) / sizeof(instruction_t);
@@ -35,6 +37,52 @@ void exec(stack_t** stack, unsigned int line_number) {
             break;
         }
     }
+}
+
+/**
+ * pop_top - removes the top element of the stack
+ * 
+ * @stack: pointer to the stack
+*/
+void pop_top(stack_t** stack) {
+    /* Update the stack pointer */
+    stack_t* current = *stack;
+    *stack = (*stack)->prev;
+
+    /* Set the next pointer of the new stack if it is not empty */
+    if (*stack) {
+        (*stack)->next = NULL;
+    } else {
+        stack_bottom = NULL;
+    }
+
+    /* Decrement stack size */
+    stack_size--;
+
+    /* Deallocate the popped element's memory */
+    free(current);
+}
+
+/**
+ * pop_bottom - removes the bottom element of the stack
+ * 
+ * @stack: pointer to the stack
+*/
+void pop_bottom(stack_t** stack) {
+    /* Update the stack bottom pointer */
+    stack_t* current = stack_bottom;
+    stack_bottom = stack_bottom->next;
+
+    /* Set the prev pointer of the stack bottom if stack is not empty */
+    if (stack_bottom) {
+        stack_bottom->prev = NULL;
+    }
+
+    /* Decrement stack size */
+    stack_size--;
+
+    /* Deallocate the popped element's memory */
+    free(current);
 }
 
 /**
@@ -65,9 +113,17 @@ void exec_push(stack_t** stack, unsigned int line_number) {
     new_stack_entry->n = operand;
     new_stack_entry->next = NULL;
     new_stack_entry->prev = *stack;
+    
     if (*stack) {
-        (*stack)->next = new_stack_entry;
-        (*stack) = (*stack)->next;
+        if (mode == STACK_MODE) {
+            (*stack)->next = new_stack_entry;
+            *stack = (*stack)->next;
+        } else {
+            new_stack_entry->next = stack_bottom;
+            new_stack_entry->prev = NULL;
+            stack_bottom->prev = new_stack_entry;
+            stack_bottom = new_stack_entry;
+        }
     } else {
         *stack = new_stack_entry;
         stack_bottom = *stack;
@@ -116,28 +172,18 @@ void exec_pint(stack_t** stack, unsigned int line_number) {
  * 
 */
 void exec_pop(stack_t** stack, unsigned int line_number) {
+    stack_t* current;
     if (!(*stack)) {
         status = -1;
         fprintf(stderr, "L%d: can't pop an empty stack\n", line_number);
         return;
     }
 
-    /* Update the stack pointer */
-    stack_t* current = *stack;
-    *stack = (*stack)->prev;
-
-    /* Set the next pointer of the new stack if it is not empty */
-    if (*stack) {
-        (*stack)->next = NULL;
+    if (mode == STACK_MODE) {
+        pop_top(stack);
     } else {
-        stack_bottom = NULL;
+        pop_bottom(stack);
     }
-
-    /* Decrement stack size */
-    stack_size--;
-
-    /* Deallocate the popped element's memory */
-    free(current);
 }
 
 /**
@@ -188,7 +234,7 @@ void exec_add(stack_t** stack, unsigned int line_number) {
     *second = (*second + *first);
 
     /* Remove the top element */
-    exec_pop(stack, line_number);
+    pop_top(stack);
 }
 
 /**
@@ -214,7 +260,7 @@ void exec_sub(stack_t** stack, unsigned int line_number) {
     *second = (*second - *first);
 
     /* Remove the top element */
-    exec_pop(stack, line_number);
+    pop_top(stack);
 }
 
 /**
@@ -247,7 +293,7 @@ void exec_div(stack_t** stack, unsigned int line_number) {
     *second = (*second / *first);
 
     /* Remove the top element */
-    exec_pop(stack, line_number);
+    pop_top(stack);
 }
 
 /**
@@ -273,7 +319,7 @@ void exec_mul(stack_t** stack, unsigned int line_number) {
     *second = (*second * *first);
 
     /* Remove the top element */
-    exec_pop(stack, line_number);
+    pop_top(stack);
 }
 
 /**
@@ -306,7 +352,7 @@ void exec_mod(stack_t** stack, unsigned int line_number) {
     *second = (*second % *first);
 
     /* Remove the top element */
-    exec_pop(stack, line_number);
+    pop_top(stack);
 }
 
 /**
@@ -396,4 +442,26 @@ void exec_rotr(stack_t** stack, unsigned int line_number) {
 
         stack_bottom = second_last;
     }
+}
+
+/**
+ * exec_stack - executes the stack instruction
+ * 
+ * @stack: pointer to the stack
+ * @line_number: the line number of the instruction
+ * 
+*/
+void exec_stack(stack_t** stack, unsigned int line_number) {
+    mode = STACK_MODE;
+}
+
+/**
+ * exec_queue - executes the queue instruction
+ * 
+ * @stack: pointer to the stack
+ * @line_number: the line number of the instruction
+ * 
+*/
+void exec_queue(stack_t** stack, unsigned int line_number) {
+    mode = QUEUE_MODE;
 }

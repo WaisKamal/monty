@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
     /* Initialize stack */
     stack_bottom = stack_ptr;
     stack_size = 0;
-    mode = 0;
+    mode = STACK_MODE;
     status = 0;
 
     /* If no file is supplied *//*
@@ -33,7 +33,8 @@ int main(int argc, char** argv) {
 
     /* Open source file */
     /* input_file = fopen(argv[1], "r"); */
-    input_file = stdin;
+    input_file = fopen("test.txt", "r");
+    /* input_file = stdin; */
 
     /* If file does not exist */
     if (input_file == NULL) {
