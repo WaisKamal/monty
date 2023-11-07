@@ -17,7 +17,7 @@ int main(int argc, char** argv) {
     state.stack_bottom = stack_ptr;
     state.stack_size = 0;
     state.mode = STACK_MODE;
-    state.status = 0;
+    state.status = EXIT_SUCCESS;
 
     /* If no file is supplied */
     if (argc != 2) {
@@ -59,6 +59,11 @@ int main(int argc, char** argv) {
         /* Ignore empty lines */
         if (state.arg_count > 0) {
             exec(&stack_ptr, line_number);
+        }
+
+        /* Exit if an error occurred */
+        if (state.status == EXIT_FAILURE) {
+            return EXIT_FAILURE;
         }
 
         /* Increment current line number */

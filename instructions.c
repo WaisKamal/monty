@@ -35,9 +35,12 @@ void exec(stack_t** stack, unsigned int line_number) {
     for (i = 0; i < instructions_count; i++) {
         if (!strcmp(state.args[0], instructions[i].opcode)) {
             instructions[i].f(stack, line_number);
-            break;
+            return;
         }
     }
+
+    state.status = EXIT_FAILURE;
+    printf("L%d: unknown instruction %s\n", line_number, state.args[0]);
 }
 
 /**
@@ -100,13 +103,13 @@ void exec_push(stack_t** stack, unsigned int line_number) {
     int operand;
 
     if (!new_stack_entry) {
-        state.status = -1;
+        state.status = EXIT_FAILURE;
         fprintf(stderr, "Error: malloc failed\n");
         return;
     }
 
     if (state.arg_count < 2 || !is_valid_integer(state.args[1])) {
-        state.status = -1;
+        state.status = EXIT_FAILURE;
         fprintf(stderr, "L%d: usage: push integer\n", line_number);
         return;
     } else {
@@ -160,7 +163,7 @@ void exec_pall(stack_t** stack, unsigned int line_number __attribute__((unused))
 */
 void exec_pint(stack_t** stack, unsigned int line_number) {
     if (!(*stack)) {
-        state.status = -1;
+        state.status = EXIT_FAILURE;
         fprintf(stderr, "L%d: can't pint, stack empty\n", line_number);
         return;
     }
@@ -176,7 +179,7 @@ void exec_pint(stack_t** stack, unsigned int line_number) {
 */
 void exec_pop(stack_t** stack, unsigned int line_number) {
     if (!(*stack)) {
-        state.status = -1;
+        state.status = EXIT_FAILURE;
         fprintf(stderr, "L%d: can't pop an empty stack\n", line_number);
         return;
     }
@@ -201,7 +204,7 @@ void exec_swap(stack_t** stack, unsigned int line_number) {
     int temp;
 
     if (state.stack_size < 2) {
-        state.status = -1;
+        state.status = EXIT_FAILURE;
         fprintf(stderr, "L%d: can't swap, stack too short\n", line_number);
         return;
     }
@@ -225,7 +228,7 @@ void exec_add(stack_t** stack, unsigned int line_number) {
     int* second;
 
     if (state.stack_size < 2) {
-        state.status = -1;
+        state.status = EXIT_FAILURE;
         fprintf(stderr, "L%d: can't add, stack too short\n", line_number);
         return;
     }
@@ -251,7 +254,7 @@ void exec_sub(stack_t** stack, unsigned int line_number) {
     int* second;
 
     if (state.stack_size < 2) {
-        state.status = -1;
+        state.status = EXIT_FAILURE;
         fprintf(stderr, "L%d: can't sub, stack too short\n", line_number);
         return;
     }
@@ -277,7 +280,7 @@ void exec_div(stack_t** stack, unsigned int line_number) {
     int* second;
 
     if (state.stack_size < 2) {
-        state.status = -1;
+        state.status = EXIT_FAILURE;
         fprintf(stderr, "L%d: can't div, stack too short\n", line_number);
         return;
     }
@@ -286,7 +289,7 @@ void exec_div(stack_t** stack, unsigned int line_number) {
     second = &(*stack)->prev->n;
 
     if (*first == 0) {
-        state.status = -1;
+        state.status = EXIT_FAILURE;
         fprintf(stderr, "L%d: division by zero\n", line_number);
         return;
     }
@@ -310,7 +313,7 @@ void exec_mul(stack_t** stack, unsigned int line_number) {
     int* second;
 
     if (state.stack_size < 2) {
-        state.status = -1;
+        state.status = EXIT_FAILURE;
         fprintf(stderr, "L%d: can't mul, stack too short\n", line_number);
         return;
     }
@@ -336,7 +339,7 @@ void exec_mod(stack_t** stack, unsigned int line_number) {
     int* second;
 
     if (state.stack_size < 2) {
-        state.status = -1;
+        state.status = EXIT_FAILURE;
         fprintf(stderr, "L%d: can't mod, stack too short\n", line_number);
         return;
     }
@@ -345,7 +348,7 @@ void exec_mod(stack_t** stack, unsigned int line_number) {
     second = &(*stack)->prev->n;
 
     if (*first == 0) {
-        state.status = -1;
+        state.status = EXIT_FAILURE;
         fprintf(stderr, "L%d: division by zero\n", line_number);
         return;
     }
@@ -368,7 +371,7 @@ void exec_pchar(stack_t** stack, unsigned int line_number) {
     int first;
 
     if (!(*stack)) {
-        state.status = -1;
+        state.status = EXIT_FAILURE;
         fprintf(stderr, "L%d: can't pop an empty stack\n", line_number);
         return;
     }
@@ -376,7 +379,7 @@ void exec_pchar(stack_t** stack, unsigned int line_number) {
     first = (*stack)->n;
 
     if (!is_printable_ascii_char(first)) {
-        state.status = -1;
+        state.status = EXIT_FAILURE;
         fprintf(stderr, "L%d: can't pchar, value out of range\n", line_number);
         return;
     }
