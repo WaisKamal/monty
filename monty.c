@@ -4,13 +4,7 @@
 #include "instructions.h"
 #include "utils.h"
 
-stack_t* stack_bottom;  /* Pointer to the bottom of the stack */
-int stack_size;         /* The size of the stack */
-char** args;            /* The opcode and its arguments */
-int arg_count;          /* The number of arguments */
-int mode;               /* The operating mode - 0: stack, 1: queue */
-int status;             /* The status code for the last instruction -
-                         * 0: sucess, -1: failure */
+state_t state;
 
 int main(int argc, char** argv) {
     FILE* input_file;           /* The source file */
@@ -20,21 +14,19 @@ int main(int argc, char** argv) {
     stack_t* stack_ptr = NULL;  /* Pointer to the stack */
 
     /* Initialize stack */
-    stack_bottom = stack_ptr;
-    stack_size = 0;
-    mode = STACK_MODE;
-    status = 0;
+    state.stack_bottom = stack_ptr;
+    state.stack_size = 0;
+    state.mode = STACK_MODE;
+    state.status = 0;
 
-    /* If no file is supplied *//*
+    /* If no file is supplied */
     if (argc != 2) {
         fprintf(stderr, "USAGE: monty file\n");
         return EXIT_FAILURE;
-    }*/
+    }
 
     /* Open source file */
-    /* input_file = fopen(argv[1], "r"); */
-    input_file = fopen("test.txt", "r");
-    /* input_file = stdin; */
+    input_file = fopen(argv[1], "r");
 
     /* If file does not exist */
     if (input_file == NULL) {
@@ -60,13 +52,16 @@ int main(int argc, char** argv) {
         /* Trim line at the first '#' character */
         remove_comments(buffer);
 
-        args = split_string(buffer);
-        arg_count = get_word_count(buffer);
+        /* Parse line and extract arguments */
+        state.args = split_string(buffer);
+        state.arg_count = get_word_count(buffer);
 
-        if (arg_count > 0) {
+        /* Ignore empty lines */
+        if (state.arg_count > 0) {
             exec(&stack_ptr, line_number);
         }
 
+        /* Increment current line number */
         line_number++;
     }
 

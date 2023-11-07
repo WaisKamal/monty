@@ -6,13 +6,17 @@
 #define STACK_MODE 0
 #define QUEUE_MODE 1
 
-extern stack_t* stack_bottom;  /* Pointer to the top of the stack */
-extern int stack_size;         /* The size of the stack */
-extern char** args;            /* The opcode and its arguments */
-extern int arg_count;          /* The number of arguments */
-extern int mode;               /* The operating mode - 0: stack, 1: queue */
-extern int status;             /* The status code for the last instruction -
-                                * 0: sucess, -1: failure */
+typedef struct state_s {
+    stack_t* stack_bottom;  /* Pointer to the bottom of the stack */
+    int stack_size;         /* The size of the stack */
+    char** args;            /* The opcode and its arguments */
+    int arg_count;          /* The number of arguments */
+    int mode;               /* The operating mode - 0: stack, 1: queue */
+    int status;             /* The status code for the last instruction -
+                            * 0: sucess, -1: failure */
+} state_t;
+
+extern state_t state;
 
 /**
  * exec - executes the given instruction
