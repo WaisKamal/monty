@@ -2,6 +2,7 @@
 #include "instructions.h"
 #include "stdio.h"
 #include "utils.h"
+#include "monty.h"
 
 /**
  * exec - executes the given instruction
@@ -142,7 +143,7 @@ void exec_push(stack_t** stack, unsigned int line_number) {
  * @line_number: the line number of the instruction
  * 
 */
-void exec_pall(stack_t** stack, unsigned int line_number) {
+void exec_pall(stack_t** stack, unsigned int line_number __attribute__((unused))) {
     stack_t* current = *stack;
     while (current) {
         printf("%d\n", current->n);
@@ -174,7 +175,6 @@ void exec_pint(stack_t** stack, unsigned int line_number) {
  * 
 */
 void exec_pop(stack_t** stack, unsigned int line_number) {
-    stack_t* current;
     if (!(*stack)) {
         state.status = -1;
         fprintf(stderr, "L%d: can't pop an empty stack\n", line_number);
@@ -391,7 +391,7 @@ void exec_pchar(stack_t** stack, unsigned int line_number) {
  * @line_number: the line number of the instruction
  * 
 */
-void exec_pstr(stack_t** stack, unsigned int line_number) {
+void exec_pstr(stack_t** stack, unsigned int line_number __attribute__((unused))) {
     stack_t* stack_top = *stack;
     while (stack_top && stack_top->n && is_printable_ascii_char(stack_top->n)) {
         printf("%c", (char)stack_top->n);
@@ -407,7 +407,7 @@ void exec_pstr(stack_t** stack, unsigned int line_number) {
  * @line_number: the line number of the instruction
  * 
 */
-void exec_rotl(stack_t** stack, unsigned int line_number) {
+void exec_rotl(stack_t** stack, unsigned int line_number __attribute__((unused))) {
     stack_t* second;
     /* rotl has no effect if stack size is less than 2 */
     if (state.stack_size > 1) {
@@ -430,7 +430,7 @@ void exec_rotl(stack_t** stack, unsigned int line_number) {
  * @line_number: the line number of the instruction
  * 
 */
-void exec_rotr(stack_t** stack, unsigned int line_number) {
+void exec_rotr(stack_t** stack, unsigned int line_number __attribute__((unused))) {
     stack_t* second_last;
     /* rotr has no effect if stack size is less than 2 */
     if (state.stack_size > 1) {
@@ -453,7 +453,7 @@ void exec_rotr(stack_t** stack, unsigned int line_number) {
  * @line_number: the line number of the instruction
  * 
 */
-void exec_stack(stack_t** stack, unsigned int line_number) {
+void exec_stack(stack_t** stack __attribute__((unused)), unsigned int line_number __attribute__((unused))) {
     state.mode = STACK_MODE;
 }
 
@@ -464,6 +464,6 @@ void exec_stack(stack_t** stack, unsigned int line_number) {
  * @line_number: the line number of the instruction
  * 
 */
-void exec_queue(stack_t** stack, unsigned int line_number) {
+void exec_queue(stack_t** stack __attribute__((unused)), unsigned int line_number __attribute__((unused))) {
     state.mode = QUEUE_MODE;
 }
